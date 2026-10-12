@@ -23,14 +23,14 @@ class OpenScienceCli < Formula
     depends_on "openssl@3"
   end
 
+  # Sharp requires these headers when building against Homebrew vips.
   resource "node-addon-api" do
     url "https://registry.npmjs.org/node-addon-api/-/node-addon-api-8.9.2.tgz"
     sha256 "4cd65698541b19a33f798f1dc25c02c6ed1c9d7749b8824b1a1ccecdd197c8ea"
   end
 
-  allow_network_access! :build
-
-  # Sharp requires these headers when building against Homebrew vips.
+  # The backend integration test listens on localhost.
+  allow_network_access! [:build, :test]
 
   def install
     ENV["npm_config_nodedir"] = formula_opt_prefix("node")
