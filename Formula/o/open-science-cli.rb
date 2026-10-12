@@ -56,7 +56,7 @@ class OpenScienceCli < Formula
     rm_r(buildpath.glob("node_modules/@img/sharp-*"))
     cd "node_modules/sharp" do
       system "npm", "run", "build"
-      rm_r("src/build/Release/obj.target")
+      rm_r((Pathname.pwd/"src/build/Release").children.reject { |path| path.extname == ".node" })
     end
 
     # Keep the locked Prisma, Canvas/Skia and ONNX native npm components coupled
