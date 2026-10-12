@@ -36,6 +36,8 @@ jobs:
           core: true
           cask: false
           stable: true
+      - name: Trust this personal fork on the disposable runner
+        run: brew trust homebrew/core
       - name: Check Formula style
         run: brew style homebrew/core/open-science
       - name: Build the Formula from the stable source archive
