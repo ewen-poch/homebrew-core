@@ -1,4 +1,4 @@
-class OpenScience < Formula
+class OpenScienceCli < Formula
   desc "Research workbench with a CLI, local web interface and Python/R execution"
   homepage "https://github.com/aipoch/open-science"
   url "https://github.com/aipoch/open-science/archive/refs/tags/v0.37.1.tar.gz"

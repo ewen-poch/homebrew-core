@@ -39,10 +39,10 @@ jobs:
       - name: Trust this personal fork on the disposable runner
         run: brew trust homebrew/core
       - name: Check Formula style
-        run: brew style homebrew/core/open-science
+        run: brew style homebrew/core/open-science-cli
       - name: Build the Formula from the stable source archive
-        run: brew install --build-from-source --verbose homebrew/core/open-science
+        run: brew install --build-from-source --verbose homebrew/core/open-science-cli
       - name: Verify installed functionality
-        run: brew test homebrew/core/open-science
+        run: brew test homebrew/core/open-science-cli
       - name: Audit the installed Formula
-        run: brew audit --new --strict homebrew/core/open-science
+        run: brew audit --new --strict homebrew/core/open-science-cli
