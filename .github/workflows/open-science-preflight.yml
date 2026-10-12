@@ -1,0 +1,44 @@
+name: Open Science Formula preflight
+
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: Focused source-install validation runner
+        type: choice
+        default: ubuntu-24.04
+        options: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: open-science-preflight-${{ github.ref }}-${{ inputs.runner }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    if: github.repository == 'ewen-poch/homebrew-core'
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 60
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+      HOMEBREW_NO_INSTALL_FROM_API: '1'
+      HOMEBREW_NO_INSTALL_CLEANUP: '1'
+      HOMEBREW_NO_ANALYTICS: '1'
+      HOMEBREW_NO_BUILD_ERROR_ISSUES: '1'
+    steps:
+      - name: Set up Homebrew and check out this revision
+        uses: Homebrew/actions/setup-homebrew@e99025eb970cfa124b8284a35463d87426917478
+        with:
+          core: true
+          cask: false
+          stable: true
+      - name: Check Formula style
+        run: brew style homebrew/core/open-science
+      - name: Build the Formula from the stable source archive
+        run: brew install --build-from-source --verbose homebrew/core/open-science
+      - name: Verify installed functionality
+        run: brew test homebrew/core/open-science
+      - name: Audit the installed Formula
+        run: brew audit --new --strict homebrew/core/open-science
