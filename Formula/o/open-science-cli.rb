@@ -17,8 +17,10 @@ class OpenScienceCli < Formula
   end
 
   on_linux do
+    depends_on "patchelf" => :build
     depends_on "dbus"
     depends_on "libsecret"
+    depends_on "openssl@3"
   end
 
   resource "node-addon-api" do
@@ -70,6 +72,12 @@ class OpenScienceCli < Formula
     ln_s formula_opt_bin("micromamba")/"micromamba", buildpath/"resources/bin"/platform/arch/"micromamba"
     system "node", "scripts/stage-backend.mjs"
     libexec.install (buildpath/"out/standalone").children
+    if OS.linux?
+      # The released Prisma engines link to OpenSSL 3, independently of Node's OpenSSL.
+      libexec.glob("node_modules/.prisma/client/libquery_engine-*.so.node").each do |engine|
+        system "patchelf", "--add-rpath", formula_opt_lib("openssl@3"), engine
+      end
+    end
     (bin/"open-science").write_env_script formula_opt_bin("node")/"node", libexec/"cli.mjs", {}
   end
 
