@@ -1,5 +1,5 @@
 class OpenScienceCli < Formula
-  desc "Research workbench with a CLI, local web interface and Python/R execution"
+  desc "AI research workbench for reproducible science"
   homepage "https://github.com/aipoch/open-science"
   url "https://github.com/aipoch/open-science/archive/refs/tags/v0.37.1.tar.gz"
   sha256 "c8a0edf386473ae5bf5fd627323489ab562284f8c51552b1295e7297459ea25d"
@@ -73,8 +73,15 @@ class OpenScienceCli < Formula
     system "node", "scripts/stage-backend.mjs"
     libexec.install (buildpath/"out/standalone").children
     if OS.linux?
+      # Homebrew uses glibc; the optional musl Canvas binary is not loadable here.
+      rm_r libexec/"node_modules/@napi-rs/canvas-linux-#{arch}-musl"
+
+      # Staging moves Prisma out of the hidden node_modules/.prisma directory.
+      engines = libexec.glob("resources/prisma-client/libquery_engine-*.so.node")
+      raise "No staged Prisma engine found" if engines.empty?
+
       # The released Prisma engines link to OpenSSL 3, independently of Node's OpenSSL.
-      libexec.glob("node_modules/.prisma/client/libquery_engine-*.so.node").each do |engine|
+      engines.each do |engine|
         system "patchelf", "--add-rpath", formula_opt_lib("openssl@3"), engine
       end
     end
