@@ -1,8 +1,8 @@
 class OpenScienceCli < Formula
   desc "AI research workbench for reproducible science"
   homepage "https://github.com/aipoch/open-science"
-  url "https://github.com/aipoch/open-science/archive/refs/tags/v0.37.1.tar.gz"
-  sha256 "c8a0edf386473ae5bf5fd627323489ab562284f8c51552b1295e7297459ea25d"
+  url "https://github.com/aipoch/open-science/archive/refs/tags/v0.37.2.tar.gz"
+  sha256 "a54aecd8536bc0135204c98f85b504008cb6e9fddcb6cf043ae0bee9fe3ad3bc"
   license "Apache-2.0"
 
   depends_on "pkgconf" => :build
@@ -63,7 +63,11 @@ class OpenScienceCli < Formula
     # to their JavaScript interfaces. Revisit these vendored components on every
     # release; upstream staging retains only the host platform.
     system "node", "node_modules/prisma/build/index.js", "generate"
-    system "npm", "run", "build:backend:compiled"
+    # Build the credential helpers locally; the npm wrapper downloads prebuilt components.
+    system "node", "node_modules/node-gyp/bin/node-gyp.js", "rebuild",
+           "--directory", "packages/credential-identity-probe-native",
+           "--nodedir=#{formula_opt_prefix("node")}", "--", "-Dbuild_node_secret=1"
+    system "node", "scripts/build-backend.mjs"
     system "npm", "run", "build:web:compiled"
 
     platform = OS.mac? ? "mac" : "linux"
