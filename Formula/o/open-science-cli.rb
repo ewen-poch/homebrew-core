@@ -30,17 +30,22 @@ class OpenScienceCli < Formula
   end
 
   # The backend integration test listens on localhost.
-  allow_network_access! [:build, :test]
+  allow_network_access! :test
+
+  def fetch
+    # Download locked npm dependencies and Prisma engines before the offline build.
+    system "npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"
+    system "node", "node_modules/prisma/build/index.js", "generate"
+  end
 
   def install
+    ENV["npm_config_offline"] = "true"
     ENV["npm_config_nodedir"] = formula_opt_prefix("node")
     ENV["PYTHON"] = formula_opt_bin("python@3.14")/"python3.14"
     ENV["SHARP_FORCE_GLOBAL_LIBVIPS"] = "1"
     ENV["ELECTRON_SKIP_BINARY_DOWNLOAD"] = "1"
     ENV["PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD"] = "1"
 
-    # Skip the desktop postinstall; build only the CLI, backend and web interface.
-    system "npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"
     (buildpath/"node_modules/node-addon-api").install resource("node-addon-api")
     system "node", "scripts/prepare-shadcn-patch.mjs"
     system "node", "node_modules/patch-package/index.js", "--error-on-fail"
@@ -62,7 +67,6 @@ class OpenScienceCli < Formula
     # Keep the locked Prisma, Canvas/Skia and ONNX native npm components coupled
     # to their JavaScript interfaces. Revisit these vendored components on every
     # release; upstream staging retains only the host platform.
-    system "node", "node_modules/prisma/build/index.js", "generate"
     # Build the credential helpers locally; the npm wrapper downloads prebuilt components.
     system "node", "node_modules/node-gyp/bin/node-gyp.js", "rebuild",
            "--directory", "packages/credential-identity-probe-native",

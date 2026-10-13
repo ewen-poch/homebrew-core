@@ -26,6 +26,7 @@ jobs:
       HOMEBREW_NO_INSTALL_FROM_API: '1'
       HOMEBREW_NO_INSTALL_CLEANUP: '1'
       HOMEBREW_NO_ANALYTICS: '1'
+      HOMEBREW_FORMULA_BUILD_NETWORK: deny
       HOMEBREW_NO_BUILD_ERROR_ISSUES: '1'
       # Do not upgrade unrelated software preinstalled on the hosted runner.
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: '1'
@@ -46,3 +47,12 @@ jobs:
         run: brew test homebrew/core/open-science-cli
       - name: Audit the installed Formula
         run: brew audit --new --strict homebrew/core/open-science-cli
+      - name: Upload build and sandbox logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: open-science-offline-${{ inputs.runner }}
+          path: |
+            ~/Library/Logs/Homebrew/open-science-cli/
+            ~/.cache/Homebrew/Logs/open-science-cli/
+          if-no-files-found: warn
