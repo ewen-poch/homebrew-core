@@ -1,8 +1,8 @@
 class OpenScienceCli < Formula
   desc "AI research workbench for reproducible science"
   homepage "https://github.com/aipoch/open-science"
-  url "https://github.com/aipoch/open-science/archive/refs/tags/v0.37.2.tar.gz"
-  sha256 "a54aecd8536bc0135204c98f85b504008cb6e9fddcb6cf043ae0bee9fe3ad3bc"
+  url "https://github.com/aipoch/open-science/archive/refs/tags/v1.0.1.tar.gz"
+  sha256 "f0a77c3a03cd32bded22db0242b75de87d817655af1a19d4afb8f84e9f24be49"
   license "Apache-2.0"
 
   depends_on "pkgconf" => :build
