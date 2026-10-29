@@ -1,12 +1,12 @@
 class OpenScienceCli < Formula
   desc "AI research workbench for reproducible science"
   homepage "https://github.com/aipoch/open-science"
-  url "https://github.com/aipoch/open-science/archive/refs/tags/v1.0.1.tar.gz"
-  sha256 "f0a77c3a03cd32bded22db0242b75de87d817655af1a19d4afb8f84e9f24be49"
+  url "https://github.com/aipoch/open-science/archive/refs/tags/v1.0.5.tar.gz"
+  sha256 "00c8fefaec495792e5d957aef6aa96679cad21d47d674dd165a02bece05d7d64"
   license "Apache-2.0"
 
   depends_on "pkgconf" => :build
-  depends_on "python@3.14" => :build
+  depends_on "python@3.15" => :build
   depends_on "glib"
   depends_on "micromamba"
   depends_on "node"
@@ -34,14 +34,14 @@ class OpenScienceCli < Formula
 
   def fetch
     # Download locked npm dependencies and Prisma engines before the offline build.
-    system "npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"
+    system "npm", "ci", *std_npm_args(prefix: false)
     system "node", "node_modules/prisma/build/index.js", "generate"
   end
 
   def install
     ENV["npm_config_offline"] = "true"
     ENV["npm_config_nodedir"] = formula_opt_prefix("node")
-    ENV["PYTHON"] = formula_opt_bin("python@3.14")/"python3.14"
+    ENV["PYTHON"] = formula_opt_bin("python@3.15")/"python3.15"
     ENV["SHARP_FORCE_GLOBAL_LIBVIPS"] = "1"
     ENV["ELECTRON_SKIP_BINARY_DOWNLOAD"] = "1"
     ENV["PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD"] = "1"
