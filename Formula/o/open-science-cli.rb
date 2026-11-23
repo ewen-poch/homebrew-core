@@ -1,6 +1,3 @@
-# frozen_string_literal: true
-
-# Standalone AI research CLI and local Web UI.
 class OpenScienceCli < Formula
   desc "Standalone AI research CLI and local Web UI"
   homepage "https://github.com/aipoch/open-science"
