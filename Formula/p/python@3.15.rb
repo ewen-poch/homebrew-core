@@ -4,6 +4,7 @@ class PythonAT315 < Formula
   url "https://www.python.org/ftp/python/3.15.0/Python-3.15.0.tgz"
   sha256 "438596cac081036d3c1d532ab7e7335eeb35567bc961749a0d5797176db0db68"
   license "Python-2.0"
+  compatibility_version 1
 
   livecheck do
     url "https://www.python.org/downloads/source/"
